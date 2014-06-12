@@ -1,7 +1,7 @@
 describe('solvers', function() {
   window.displayBoard = function() {};
 
-  xdescribe('findNRooksSolution()', function() {
+  describe('findNRooksSolution()', function() {
 
     it('finds a valid solution for n of 1-8', function() {
       _.range(1, 9).map(function(n) {

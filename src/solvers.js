@@ -19,26 +19,23 @@ window.findNRooksSolution = function(n) {
 
   var rowOccupied = [];
   for (var row = 0; row < n; row++) {
-    rowOccupied[i] = 0;
+    rowOccupied[row] = 0;
   }
 
   var search = function(currentColumn){
     for(var i = 0; i < n; i++){
-      if (rowOccupied[i] === 0) {
-        board.attributes[i][currentColumn] = 1;
-        rowOccupied[i]++;
-        if (!board.hasAnyRooksConflicts()) {
-          if (currentColumn === (n-1)) {
-            console.log('Single solution for ' + n + ' rooks:', JSON.stringify(board.rows()));
-            solution = board.rows();
-          } else {
-            search(currentColumn+1);
-          }
+      board.attributes[i][currentColumn] = 1;
+      rowOccupied[i]++;
+      if (rowOccupied[i] === 1) {
+        if (currentColumn === (n-1)) {
+          console.log('Single solution for ' + n + ' rooks:', JSON.stringify(board.rows()));
+          solution = board.rows();
+        } else {
+          search(currentColumn+1);
         }
-        board.attributes[i][currentColumn] = 0;
-        rowOccupied[i]--;
-
       }
+      board.attributes[i][currentColumn] = 0;
+      rowOccupied[i]--;
     }
   };
 
