@@ -27,7 +27,7 @@ describe('solvers', function() {
 
   });
 
-  xdescribe('findNQueensSolution()', function() {
+  describe('findNQueensSolution()', function() {
 
     it('finds a valid solution for n of 0-8', function() {
       _.range(1, 8).map(function(n) {
