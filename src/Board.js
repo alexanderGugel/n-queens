@@ -38,12 +38,13 @@
     },
 
     hasAnyRooksConflicts: function() {
-      return this.hasAnyRowConflicts();
+      return this.hasAnyColConflicts() || this.hasAnyRowConflicts();
     },
 
     hasAnyQueenConflictsOn: function(rowIndex, colIndex) {
       return (
-        this.hasRowConflictAt(rowIndex) ||
+        this.hasRowConflictAt(rowIndex, colIndex) ||
+        this.hasColConflictAt(rowIndex, colIndex) ||
         this.hasMajorDiagonalConflictAt(this._getFirstRowColumnIndexForMajorDiagonalOn(rowIndex, colIndex)) ||
         this.hasMinorDiagonalConflictAt(this._getFirstRowColumnIndexForMinorDiagonalOn(rowIndex, colIndex))
       );

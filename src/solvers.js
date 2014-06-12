@@ -17,18 +17,28 @@ window.findNRooksSolution = function(n) {
   var solution;
   var board = new Board({ n : n });
 
+  var rowOccupied = [];
+  for (var row = 0; row < n; row++) {
+    rowOccupied[i] = 0;
+  }
+
   var search = function(currentColumn){
     for(var i = 0; i < n; i++){
-      board.attributes[i][currentColumn] = 1;
-      if (!board.hasAnyRooksConflicts()) {
-        if (currentColumn === (n-1)) {
-          console.log('Single solution for ' + n + ' rooks:', JSON.stringify(board.rows()));
-          solution = board.rows();
-        } else {
-          search(currentColumn+1);
+      if (rowOccupied[i] === 0) {
+        board.attributes[i][currentColumn] = 1;
+        rowOccupied[i]++;
+        if (!board.hasAnyRooksConflicts()) {
+          if (currentColumn === (n-1)) {
+            console.log('Single solution for ' + n + ' rooks:', JSON.stringify(board.rows()));
+            solution = board.rows();
+          } else {
+            search(currentColumn+1);
+          }
         }
+        board.attributes[i][currentColumn] = 0;
+        rowOccupied[i]--;
+
       }
-      board.attributes[i][currentColumn] = 0;
     }
   };
 
@@ -66,62 +76,117 @@ window.countNRooksSolutions = function(n) {
 };
 
 
-
+window.totalTime = 0;
 // return a matrix (an array of arrays) representing a single nxn chessboard, with n queens placed such that none of them can attack each other
 window.findNQueensSolution = function(n) {
   var solution;
+  var startTime = new Date().getTime();
   var board = new Board({ n : n });
+
+  var rowsOccupied = [];
+  var majorOccupied = [];
+  var minorOccupied = [];
 
   var search = function(currentColumn){
     for(var i = 0; i < n; i++){
       board.attributes[i][currentColumn] = 1;
-      if (!board.hasAnyQueensConflicts()) {
-        if (currentColumn === (n-1)) {
 
+      if (rowsOccupied[i] === undefined) {
+        rowsOccupied[i] = 0;
+      }
+      rowsOccupied[i]++;
+
+      var topMajorColIndex = currentColumn - i;
+      var topMinorColIndex = currentColumn + i;
+      if (majorOccupied[topMajorColIndex] === undefined) {
+        majorOccupied[topMajorColIndex] = 0;
+      }
+      majorOccupied[topMajorColIndex]++;
+
+      if (minorOccupied[topMinorColIndex] === undefined) {
+        minorOccupied[topMinorColIndex] = 0;
+      }
+      minorOccupied[topMinorColIndex]++;
+
+      if (rowsOccupied[i] === 1 && majorOccupied[topMajorColIndex] === 1 && minorOccupied[topMinorColIndex] === 1) {
+        if (currentColumn === (n-1)) {
           solution = board.rows();
-          console.log('Single solution for ' + n + ' queens:', JSON.stringify(solution));
         } else {
           search(currentColumn+1);
         }
       }
       board.attributes[i][currentColumn] = 0;
+      rowsOccupied[i]--;
+      majorOccupied[topMajorColIndex]--;
+      minorOccupied[topMinorColIndex]--;
     }
   };
 
   search(0);
-  if (solution === undefined){
-    return ((new Board({n : n})).rows());
+  var stopTime = new Date().getTime();
+  window.totalTime += stopTime - startTime;
+  console.log('totalTime: ' + window.totalTime);
+
+  if (solution === undefined) {
+    solution = new Board({ n: n }).rows();
   }
+
+  // console.log('Number of solutions for ' + n + ' queens:', solutionCount);
   return solution;
 };
 
-
+window.totalTime = 0;
 // return the number of nxn chessboards that exist, with n queens placed such that none of them can attack each other
 window.countNQueensSolutions = function(n) {
   if (n === 0) {
     return 1;
   }
+  var startTime = new Date().getTime();
 
   var solutionCount = 0;
   var board = new Board({ n : n });
 
+  var rowsOccupied = [];
+  var majorOccupied = [];
+  var minorOccupied = [];
+
   var search = function(currentColumn){
     for(var i = 0; i < n; i++){
       board.attributes[i][currentColumn] = 1;
-      if (!board.hasAnyQueensConflicts()) {
+
+      if (rowsOccupied[i] === undefined) {
+        rowsOccupied[i] = 0;
+      }
+      rowsOccupied[i]++;
+
+      var topMajorColIndex = currentColumn - i;
+      var topMinorColIndex = currentColumn + i;
+      if (majorOccupied[topMajorColIndex] === undefined) {
+        majorOccupied[topMajorColIndex] = 0;
+      }
+      majorOccupied[topMajorColIndex]++;
+
+      if (minorOccupied[topMinorColIndex] === undefined) {
+        minorOccupied[topMinorColIndex] = 0;
+      }
+      minorOccupied[topMinorColIndex]++;
+
+      if (rowsOccupied[i] === 1 && majorOccupied[topMajorColIndex] === 1 && minorOccupied[topMinorColIndex] === 1) {
         if (currentColumn === (n-1)) {
-          console.log('Single solution for ' + n + ' rooks:', JSON.stringify(board.rows()));
           solutionCount += 1;
         } else {
           search(currentColumn+1);
         }
       }
       board.attributes[i][currentColumn] = 0;
+      rowsOccupied[i]--;
+      majorOccupied[topMajorColIndex]--;
+      minorOccupied[topMinorColIndex]--;
     }
   };
 
   search(0);
-
-  console.log('Number of solutions for ' + n + ' queens:', solutionCount);
+  var stopTime = new Date().getTime();
+  // console.log('Number of solutions for ' + n + ' queens:', solutionCount);
   return solutionCount;
 };
