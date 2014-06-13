@@ -187,3 +187,37 @@ window.countNQueensSolutions = function(n) {
   // console.log('Number of solutions for ' + n + ' queens:', solutionCount);
   return solutionCount;
 };
+
+window.countNQueensSolutionsBitShifting = function(n) {
+  var all, count;
+
+  var tryFunc = function (ld, cols, rd) {
+    if (cols === all) {
+      count++;
+      return;
+    }
+
+    var poss = ~(ld | cols | rd) & all;
+
+    while (poss) {
+      var bit = poss & -poss;
+      poss = poss - bit; // poss -:= bit ???? Does this work?
+      tryFunc((ld | bit) << 1, cols | bit, (rd | bit) >> 1);
+    }
+  };
+
+  all = 1;
+
+  for (var i = 1; i < n; i++) {
+    all = 2*all + 1;
+  }
+
+  count = 0;
+  tryFunc(0, 0, 0);
+  console.log("There are " + count + " solutions to " + n + "-queens problem");
+
+  return count;
+};
+
+
+
